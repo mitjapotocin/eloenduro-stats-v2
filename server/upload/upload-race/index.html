@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+Static html
+<input type="file" id="csvFileInput" accept=".csv">
+<button onclick="getAsText()">Upload</button>
+
+<body>
+
+</body>
+
+<script type="text/javascript" src="csv2json.js"></script>
+<script>
+    function getAsText() {
+        var reader = new FileReader();
+        // Read file into memory as UTF-8
+        reader.addEventListener('load', function () {
+            var openedCSV = this.result.replace("Place/Points", "PlacePoints");
+            for (let i = 1; i < 12; i++) {
+                openedCSV = openedCSV.replace(`${i}.Control(Name)`, `ControlName${i}`);
+                openedCSV = openedCSV.replace(`${i}.Splittime`, `SplitTime${i}`);
+                openedCSV = openedCSV.replace(`${i}.Split-Pos.`, `SplitPos${i}`);
+                openedCSV = openedCSV.replace(`${i}.Split-Behind`, `SplitBehind${i}`);
+                openedCSV = openedCSV.replace(`${i}.Total Time`, `TotalTime${i}`);
+                openedCSV = openedCSV.replace(`${i}.Total-Behind`, `TotalBehind${i}`);
+                openedCSV = openedCSV.replace(`${i}.Total Pos.`, `TotalPos${i}`);
+                openedCSV = openedCSV.replace(`${i}.Split-Behind`, `SplitBehind${i}`);
+            }
+
+            convert2JSON(openedCSV)
+        });
+        reader.readAsText(document.querySelector('input').files[0]);
+    }
+
+    function convert2JSON(csv) {
+        const json = CSVJSON.csv2json(csv, {
+            parseNumbers: true
+        });
+
+        json.forEach(sendToDB);
+    }
+
+    function sendToDB(data) {
+        var line = JSON.stringify(data)
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText);
+            }
+        });
+
+        xhr.open("POST", "http://localhost:5000/api/results");
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.setRequestHeader("cache-control", "no-cache");
+        xhr.setRequestHeader("postman-token", "a8d30063-94ff-0ce2-da02-dbe930f44bc8");
+
+        xhr.send(line);
+    }
+</script>
+
+</html>

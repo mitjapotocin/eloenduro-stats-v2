@@ -8,9 +8,20 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const posts = require("./routes/api/posts");
+const results = require("./routes/api/results");
 
-app.use("/api/posts", posts);
+app.use(express.static(__dirname + "/upload"));
+
+app.use("/api/results", results);
+
+// Handle production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(__dirname + "/public/"));
+
+  app.get(/.*/, (req, res) =>
+    res.sendFile(__dirname + "/public/indexedDB.html")
+  );
+}
 
 const port = process.env.PORT || 5000;
 
