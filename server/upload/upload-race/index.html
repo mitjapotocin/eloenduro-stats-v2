@@ -7,9 +7,22 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
-Static html
+
 <input type="file" id="csvFileInput" accept=".csv">
 <button onclick="getAsText()">Upload</button>
+
+<div>
+    <textarea rows="30" cols="80">
+        {
+            "event": "",
+            "course": [""]
+        }
+
+
+
+
+</textarea>
+</div>
 
 <body>
 
@@ -22,7 +35,8 @@ Static html
         // Read file into memory as UTF-8
         reader.addEventListener('load', function () {
             var openedCSV = this.result.replace("Place/Points", "PlacePoints");
-            for (let i = 1; i < 12; i++) {
+            //Handles potential 12 stages 
+            for (let i = 1; i < 13; i++) {
                 openedCSV = openedCSV.replace(`${i}.Control(Name)`, `ControlName${i}`);
                 openedCSV = openedCSV.replace(`${i}.Splittime`, `SplitTime${i}`);
                 openedCSV = openedCSV.replace(`${i}.Split-Pos.`, `SplitPos${i}`);
@@ -48,6 +62,7 @@ Static html
 
     function sendToDB(data) {
         var line = JSON.stringify(data)
+        console.log(line)
 
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
@@ -66,5 +81,10 @@ Static html
         xhr.send(line);
     }
 </script>
+<style>
+    body {
+        font-size: 180%
+    }
+</style>
 
 </html>
