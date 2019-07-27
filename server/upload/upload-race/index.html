@@ -67,7 +67,7 @@
     }
 
     // TODO: make it possible to select collection. Save event info to a separate collection.
-
+    const resultsApi = "http://localhost:5000/api/results"
 
 
     function sendToDB(data) {
@@ -84,7 +84,7 @@
             }
         });
 
-        xhr.open("POST", "http://localhost:5000/api/results");
+        xhr.open("POST", resultsApi);
         xhr.setRequestHeader("content-type", "application/json");
         xhr.setRequestHeader("cache-control", "no-cache");
         xhr.setRequestHeader("postman-token", "a8d30063-94ff-0ce2-da02-dbe930f44bc8");
