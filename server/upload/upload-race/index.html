@@ -9,20 +9,25 @@
 </head>
 
 <input type="file" id="csvFileInput" accept=".csv">
-<button onclick="getAsText()">Upload</button>
 
 <div>
-    <textarea rows="30" cols="80">
-        {
-            "event": "",
-            "course": [""]
-        }
-
-
-
-
-</textarea>
+    Event (for DB):
+    <textarea name="event" id="event" cols="30" rows="1" placeholder="npr. groznjan2019"></textarea>
 </div>
+<div>
+    Event Name:
+    <textarea name="event_name" id="event_name" cols="30" rows="1"></textarea>
+</div>
+<div>
+    Date:
+    <textarea name="date" id="date" cols="30" rows="1"></textarea>
+</div>
+<div>
+    Year:
+    <textarea name="year" id="year" cols="30" rows="1"></textarea>
+</div>
+
+<button onclick="getAsText()">Upload</button>
 
 <body>
 
@@ -35,7 +40,8 @@
         // Read file into memory as UTF-8
         reader.addEventListener('load', function () {
             var openedCSV = this.result.replace("Place/Points", "PlacePoints");
-            //Handles potential 12 stages 
+            //Handles potential 12 stages
+            //FIXME: change this renaming in a more elegant way 
             for (let i = 1; i < 13; i++) {
                 openedCSV = openedCSV.replace(`${i}.Control(Name)`, `ControlName${i}`);
                 openedCSV = openedCSV.replace(`${i}.Splittime`, `SplitTime${i}`);
@@ -45,9 +51,10 @@
                 openedCSV = openedCSV.replace(`${i}.Total-Behind`, `TotalBehind${i}`);
                 openedCSV = openedCSV.replace(`${i}.Total Pos.`, `TotalPos${i}`);
                 openedCSV = openedCSV.replace(`${i}.Split-Behind`, `SplitBehind${i}`);
+                openedCSV = openedCSV.replace(`${i}.Total`, `Total${i}`);
             }
 
-            convert2JSON(openedCSV)
+            convert2JSON(openedCSV).forEach(sendToDB);
         });
         reader.readAsText(document.querySelector('input').files[0]);
     }
@@ -56,13 +63,17 @@
         const json = CSVJSON.csv2json(csv, {
             parseNumbers: true
         });
-
-        json.forEach(sendToDB);
+        return json
     }
+
+    // TODO: make it possible to select collection. Save event info to a separate collection.
+
+
 
     function sendToDB(data) {
         var line = JSON.stringify(data)
-        console.log(line)
+        var event = document.getElementById("event").value
+        lineAddEvent = line.slice(0, line.length - 1) + `,"event":"${event}"}`
 
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
@@ -78,12 +89,13 @@
         xhr.setRequestHeader("cache-control", "no-cache");
         xhr.setRequestHeader("postman-token", "a8d30063-94ff-0ce2-da02-dbe930f44bc8");
 
-        xhr.send(line);
+        xhr.send(lineAddEvent);
     }
 </script>
 <style>
     body {
-        font-size: 180%
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 120%
     }
 </style>
 
