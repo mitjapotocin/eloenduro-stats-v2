@@ -9,10 +9,12 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const results = require("./routes/api/results");
+const events = require("./routes/api/events");
 
 app.use(express.static(__dirname + "/upload"));
 
 app.use("/api/results", results);
+app.use("/api/events", events);
 
 // Handle production
 if (process.env.NODE_ENV === "production") {
