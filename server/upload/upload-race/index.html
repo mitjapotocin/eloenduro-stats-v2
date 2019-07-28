@@ -70,7 +70,6 @@
             fixedData = fixedData.replace(`${i}.Total Pos.`, `TotalPos${i}`);
             fixedData = fixedData.replace(`${i}.Split-Behind`, `SplitBehind${i}`);
             fixedData = fixedData.replace(`${i}.Total`, `Total${i}`);
-
         }
         callback(fixedData)
     }
@@ -95,9 +94,6 @@
         return json
     }
 
-    // TODO: make it possible to select collection. Save event info to a separate collection.
-
-
     function sendToDB(data, x, y, collection) {
         let line = JSON.stringify(data)
         let event = document.getElementById("event").value
@@ -105,12 +101,6 @@
 
         let xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
-
-        xhr.addEventListener("readystatechange", function () {
-            if (this.readyState === 4) {
-                console.log(this.responseText);
-            }
-        });
 
         xhr.open("POST", collection);
         xhr.setRequestHeader("content-type", "application/json");
@@ -130,7 +120,7 @@
     }
 
     function displayProgress(line, response) {
-        document.getElementById('progress').innerHTML += `Line ${line}... added to DB. Response:${response}<br>`
+        document.getElementById('progress').innerHTML += `Response: ${response} | Line: ${line}... added to DB. <br>`
     }
 </script>
 <style>
