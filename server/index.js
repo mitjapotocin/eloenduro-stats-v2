@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
+const history = require("connect-history-api-fallback");
 const app = express();
 
 // Middleware
@@ -15,6 +15,16 @@ app.use(express.static(__dirname + "/upload"));
 
 app.use("/api/results", results);
 app.use("/api/events", events);
+
+const staticFileMiddleware = express.static(__dirname);
+app.use(staticFileMiddleware);
+app.use(
+  history({
+    disableDotRule: true,
+    verbose: true
+  })
+);
+app.use(staticFileMiddleware);
 
 // Handle production
 if (process.env.NODE_ENV === "production") {
