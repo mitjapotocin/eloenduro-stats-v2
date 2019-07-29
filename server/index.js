@@ -16,6 +16,7 @@ app.use(express.static(__dirname + "/upload"));
 app.use("/api/results", results);
 app.use("/api/events", events);
 
+//For history mode in Vue-Router
 const staticFileMiddleware = express.static(__dirname);
 app.use(staticFileMiddleware);
 app.use(
@@ -30,9 +31,7 @@ app.use(staticFileMiddleware);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(__dirname + "/public/"));
 
-  app.get(/.*/, (req, res) =>
-    res.sendFile(__dirname + "/public/indexedDB.html")
-  );
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + "/public/index.html"));
 }
 
 const port = process.env.PORT || 5000;
