@@ -19,22 +19,37 @@
     <input name="event-name" id="event-name" cols="30" rows="1"></input>
 </div>
 <div>
+    Location: <br>
+    <input name="location" id="location" cols="30" rows="1"></input>
+</div>
+<div>
     Date:<br>
-    <input name="date" id="date" cols="30" rows="1"></input>
+
+    <input type="date" name="date" id="date" cols="30" rows="1"></input>
 </div>
 <div>
     Year:<br>
     <input name="year" id="year" cols="30" rows="1"></input>
 </div>
+<form id="series">
+    <input class="series-radio" type="radio" name="series" value="4 Fun"> 4 Fun<br>
+    <input class="series-radio" type="radio" name="series" value="SloEnduro"> SloEnduro<br>
+</form>
+<span id="radio"></span>
+<input id="dp-checkbox" type="checkbox" name="DP" value="DP">DP
 
+<div>
+    Password:<br>
+    <input type="password" name="password" id="password" cols="30" rows="1"></input>
+    <span id="warning"></span>
+</div>
+<button onclick="getDP()">CHECKDP</button>
 <button onclick="upload()">Upload</button>
-
 <div id="progress">
     Progress: <br>
 </div>
 
 <body>
-
 </body>
 
 <script type="text/javascript" src="csv2json.js"></script>
@@ -42,13 +57,53 @@
     const resultsApi = "http://localhost:5000/api/results"
     const eventsApi = "http://localhost:5000/api/events"
 
+    //TODO: move pasword to .env
+    //TODO: prevent duplication od events/results. check if result is already in DB
+
+
+
+
+    function getDP() {
+        console.log(document.getElementById("dp-checkbox").checked)
+    }
+
+
+    function getSeries() {
+        let radios = document.getElementsByClassName("series-radio")
+        let seriesValue;
+        Array.from(radios).forEach(r => {
+            if (r.checked) {
+                seriesValue = r.value
+            }
+        })
+        return seriesValue
+    }
+
+    function hashCode(s) {
+        return s.split("").reduce(function (a, b) {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a
+        }, 0);
+    }
+
+    //! hashed password hardcoded
+    function checkPass(password) {
+        return hashCode(password) == -1338850634
+    }
+
     function upload() {
-        readCSVAndUploadEvents()
-        uploadEvent()
+        if (checkPass(document.getElementById("password").value)) {
+            document.getElementById("warning").innerHTML = "OK"
+            readCSVAndUploadEvents()
+            uploadEvent()
+        } else document.getElementById("warning").innerHTML = "wrong password"
     }
 
     function uploadEvent() {
         let eventInfo = `{
+            "dp": ${document.getElementById("dp-checkbox").checked},
+            "series": "${getSeries()}",
+            "location": "${document.getElementById("location").value}",
             "eventName": "${document.getElementById("event-name").value}",
             "date": "${document.getElementById("date").value}",
             "year": "${document.getElementById("year").value}"
@@ -56,11 +111,11 @@
         sendToDB(JSON.parse(eventInfo), NaN, NaN, eventsApi)
     }
 
-    //Handles potential 12 stages
+    //Handles potential 14 stages
     //FIXME: change this renaming in a more elegant way 
     function fix(data, callback) {
         let fixedData = data.replace("Place/Points", "PlacePoints");
-        for (let i = 1; i < 13; i++) {
+        for (let i = 1; i < 15; i++) {
             fixedData = fixedData.replace(`${i}.Control(Name)`, `ControlName${i}`);
             fixedData = fixedData.replace(`${i}.Splittime`, `SplitTime${i}`);
             fixedData = fixedData.replace(`${i}.Split-Pos.`, `SplitPos${i}`);
@@ -120,7 +175,8 @@
     }
 
     function displayProgress(line, response) {
-        document.getElementById('progress').innerHTML += `Response: ${response} | Line: ${line}... added to DB. <br>`
+        document.getElementById('progress').innerHTML +=
+            `Response: ${response} | Line: ${line}... added to DB. <br>`
     }
 </script>
 <style>
