@@ -57,10 +57,7 @@
     const resultsApi = "http://localhost:5000/api/results"
     const eventsApi = "http://localhost:5000/api/events"
 
-    //TODO: move pasword to .env
     //TODO: prevent duplication od events/results. check if result is already in DB
-
-
 
 
     function getDP() {
@@ -86,7 +83,7 @@
         }, 0);
     }
 
-    //! hashed password hardcoded
+    //TODO: this is a temporary solution
     function checkPass(password) {
         return hashCode(password) == -1338850634
     }

@@ -22,7 +22,6 @@ if (process.env.NODE_ENV === "production") {
 
   app.get(/.*/, (req, res) => res.sendFile(__dirname + "/public/index.html"));
 }
-
 //For history mode in Vue-Router
 const staticFileMiddleware = express.static(__dirname);
 app.use(staticFileMiddleware);
