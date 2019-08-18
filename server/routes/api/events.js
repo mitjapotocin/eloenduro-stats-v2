@@ -10,6 +10,18 @@ router.get("/", async (req, res) => {
   res.send(await results.find({}).toArray());
 });
 
+// GET Results search by series
+router.get("/series/SloEnduro/", async (req, res) => {
+  const results = await loadResultsCollection();
+  res.send(
+    await results
+      .find({
+        series: "SloEnduro"
+      })
+      .toArray()
+  );
+});
+
 // GET Results search ... prepared if needed
 // router.get("/:course", async (req, res) => {
 //   const results = await loadResultsCollection();
