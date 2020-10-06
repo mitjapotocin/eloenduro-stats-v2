@@ -25,6 +25,7 @@ router.post('/', async (req, res) => {
 async function loadResultsCollection() {
   const client = await mongodb.MongoClient.connect(process.env.DB_CONNECTION, {
     useNewUrlParser: true,
+    useUnifiedTopology: true,
   })
   return client.db('sloenduro-stats').collection('snake-results')
 }
