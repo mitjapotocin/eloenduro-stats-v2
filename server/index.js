@@ -19,6 +19,7 @@ app.use('/api/events', events)
 app.use('/api/snake-results', snake)
 
 // Handle production
+app.use(express.static(__dirname + '/public/'))
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(__dirname + '/public/'))
 
